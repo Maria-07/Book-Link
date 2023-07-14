@@ -97,4 +97,12 @@ const getAllBook = async (
   };
 };
 
-export const BookService = { createBook, getAllBook };
+//* get single Book
+const getSingleBook = async (id: string): Promise<IBook | null> => {
+  const result = await Book.findById(id);
+  return result;
+};
+
+//* Update a book
+
+export const BookService = { createBook, getAllBook, getSingleBook };

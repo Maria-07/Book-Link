@@ -10,10 +10,9 @@ router.post('/', BookController.createBook);
 router.get('/', BookController.getAllBook);
 
 // get a single book
-// router.get(
-//   '/:id',
+router.get('/:id', BookController.getSingleBook);
 
-//   BookController.getSingleBook,
-// );
+//* Update a book
+// router.patch('/:id', BookController.updateBook);
 
 export const BookRoutes = router;

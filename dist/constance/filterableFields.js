@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bookFilterableFields = void 0;
+exports.wishListFilterableFields = exports.bookFilterableFields = void 0;
 exports.bookFilterableFields = [
     'searchTerm',
     'title',
@@ -8,3 +8,4 @@ exports.bookFilterableFields = [
     'author',
     'publicationDate',
 ];
+exports.wishListFilterableFields = ['searchTerm', 'status'];

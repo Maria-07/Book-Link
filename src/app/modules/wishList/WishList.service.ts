@@ -54,7 +54,9 @@ const getAllWishList = async (filters: IWishListFilter) => {
   }
   const whereCondition = andCondition.length > 0 ? { $and: andCondition } : {};
 
-  const result = await WishList.find(whereCondition);
+  const result = await WishList.find(whereCondition)
+    .populate('book')
+    .populate('user');
 
   return {
     data: result,

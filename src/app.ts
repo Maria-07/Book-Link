@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req: Request, res: Response) => {
-  console.log('this is BookLink:Book-Catalog');
+  // console.log('this is BookLink:Book-Catalog');
   res.send('WELCOME TO BookLink 📖');
 });
 

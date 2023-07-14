@@ -4,12 +4,12 @@ import { AuthService } from './auth.service';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import config from '../../../config';
-import { ILoginUserResponse } from './auth.interface';
+import { ILoginUserResponse, IRefreshTokenResponse } from './auth.interface';
 
 // create user
 const createUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    console.log(req.cookies, 'cookie');
+    // console.log(req.cookies, 'cookie');
 
     const { ...user } = req.body;
 
@@ -47,4 +47,27 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const AuthController = { createUser, loginUser };
+//* create refresh token
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+  const { refreshToken } = req.cookies;
+  // console.log('refresh token', refreshToken);
+
+  const result = await AuthService.refreshToken(refreshToken);
+
+  // set refresh token  in Cookie
+  const cookieOption = {
+    secure: config.env === 'production',
+    httpOnly: true,
+  };
+
+  res.cookie('refreshToken', refreshToken, cookieOption);
+
+  sendResponse<IRefreshTokenResponse>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'New access token generated successfully !',
+    data: result,
+  });
+});
+
+export const AuthController = { createUser, loginUser, refreshToken };

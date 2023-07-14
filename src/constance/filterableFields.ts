@@ -5,3 +5,4 @@ export const bookFilterableFields = [
   'author',
   'publicationDate',
 ];
+export const wishListFilterableFields = ['searchTerm', 'status'];

@@ -9,6 +9,9 @@ import {
 } from '../../../interfaces/pagination';
 import { bookFilterableFields } from '../../../constance/filterableFields';
 import { paginationHelpers } from '../../../helpers/paginationHelpers';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
+import config from '../../../config';
+import { Secret } from 'jsonwebtoken';
 
 //* create a Book
 const createBook = async (cow: IBook): Promise<IBook | null> => {
@@ -105,4 +108,52 @@ const getSingleBook = async (id: string): Promise<IBook | null> => {
 
 //* Update a book
 
-export const BookService = { createBook, getAllBook, getSingleBook };
+const updateBook = async (
+  id: string,
+  payload: Partial<IBook>,
+  token: string,
+): Promise<IBook | null> => {
+  // console.log(id, payload);
+  console.log('Token => 🔖🔖', token);
+
+  let verifiedToken = null;
+
+  try {
+    verifiedToken = jwtHelpers.verifyToken(
+      token as string,
+      config.jwt.secret as Secret,
+    );
+  } catch (err) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
+  }
+
+  console.log('verifiedToken =======', verifiedToken);
+
+  const { userEmail } = verifiedToken;
+  // console.log('Email 📩', email);
+
+  const bookDetails = await Book.findById(id);
+  // console.log('bookDetails 📕', cowDetails);
+
+  if (!bookDetails) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'This Book is invalid');
+  }
+
+  if (!userEmail) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'user UNAUTHORIZED');
+  }
+
+  const result = await Book.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  // console.log(result, 'updated result');
+  return result;
+};
+
+export const BookService = {
+  createBook,
+  getAllBook,
+  getSingleBook,
+  updateBook,
+};

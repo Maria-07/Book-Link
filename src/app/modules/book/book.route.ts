@@ -13,6 +13,6 @@ router.get('/', BookController.getAllBook);
 router.get('/:id', BookController.getSingleBook);
 
 //* Update a book
-// router.patch('/:id', BookController.updateBook);
+router.patch('/:id', BookController.updateBook);
 
 export const BookRoutes = router;

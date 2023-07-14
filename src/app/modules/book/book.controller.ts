@@ -55,4 +55,24 @@ const getSingleBook = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const BookController = { createBook, getAllBook, getSingleBook };
+const updateBook = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+  const token = req.headers.authorization;
+
+  const result = await BookService.updateBook(id, updatedData, token as string);
+
+  sendResponse<IBook>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Book Updated successfully',
+    data: result,
+  });
+});
+
+export const BookController = {
+  createBook,
+  getAllBook,
+  getSingleBook,
+  updateBook,
+};

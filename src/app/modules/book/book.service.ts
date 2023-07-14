@@ -107,7 +107,6 @@ const getSingleBook = async (id: string): Promise<IBook | null> => {
 };
 
 //* Update a book
-
 const updateBook = async (
   id: string,
   payload: Partial<IBook>,
@@ -151,9 +150,39 @@ const updateBook = async (
   return result;
 };
 
+//* Delete Book
+const deleteBook = async (id: string, token: string): Promise<IBook | null> => {
+  // console.log('Token => 🔖🔖', token);
+
+  let verifiedToken = null;
+
+  try {
+    verifiedToken = jwtHelpers.verifyToken(
+      token as string,
+      config.jwt.secret as Secret,
+    );
+  } catch (err) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
+  }
+
+  // console.log('verifiedToken =======', verifiedToken);
+
+  const { userEmail } = verifiedToken;
+
+  if (!userEmail) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'UNAUTHORIZED');
+  }
+
+  const result = await Book.findByIdAndDelete({ _id: id }, { new: true });
+
+  // console.log('Deleted Result 🗑️🗑️', result);
+  return result;
+};
+
 export const BookService = {
   createBook,
   getAllBook,
   getSingleBook,
   updateBook,
+  deleteBook,
 };

@@ -3,7 +3,7 @@ import { IGenericErrorResponse } from '../interfaces/common';
 import { IGenericErrorMassage } from '../interfaces/error';
 
 const handleValidationError = (
-  err: mongoose.Error.ValidationError
+  err: mongoose.Error.ValidationError,
 ): IGenericErrorResponse => {
   const error: IGenericErrorMassage[] = Object.values(err.errors).map(
     (e: mongoose.Error.ValidatorError | mongoose.Error.CastError) => {
@@ -11,7 +11,7 @@ const handleValidationError = (
         path: e?.path,
         message: e?.message,
       };
-    }
+    },
   );
   const statusCode = 400;
   return {

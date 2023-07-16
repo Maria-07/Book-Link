@@ -7,6 +7,7 @@ import pick from '../../../shared/pick';
 import { bookFilterableFields } from '../../../constance/filterableFields';
 import { paginationFields } from '../../../constance/paginationC';
 import { IBook } from './book.interface';
+import { Book } from './book.model';
 
 //* create a Book profile
 const createBook: RequestHandler = catchAsync(
@@ -86,10 +87,47 @@ const deleteBook = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+//* Add reviews
+const addReview = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const addReview = req.body.reviews;
+
+  // console.log('new review : ', addReview);
+
+  const result = await Book.updateOne(
+    { _id: id },
+    { $push: { reviews: addReview } },
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Add Review successfully',
+    data: result,
+  });
+});
+
+//* get reviews
+const getAllReview = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  console.log(id);
+
+  const result = await Book.findOne({ _id: id }).select({ reviews: 1, _id: 0 });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'get all Review successfully',
+    data: result,
+  });
+});
+
 export const BookController = {
   createBook,
   getAllBook,
   getSingleBook,
   updateBook,
   deleteBook,
+  addReview,
+  getAllReview,
 };

@@ -179,10 +179,24 @@ const deleteBook = async (id: string, token: string): Promise<IBook | null> => {
   return result;
 };
 
+// //* Update a book
+// const addReview = async (id: string, payload: []) => {
+//   const result = await Book.updateOne(
+//     { id: id },
+//     { $push: { comments: comment } },
+//   );
+
+//   console.log(result);
+
+//   // console.log(result, 'updated result');
+//   return result;
+// };
+
 export const BookService = {
   createBook,
   getAllBook,
   getSingleBook,
   updateBook,
   deleteBook,
+  // addReview,
 };

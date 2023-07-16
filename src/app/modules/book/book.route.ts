@@ -18,4 +18,10 @@ router.patch('/:id', BookController.updateBook);
 //* delete a book
 router.delete('/:id', BookController.deleteBook);
 
+//* add a review
+router.post('/review/:id', BookController.addReview);
+
+//* get all review
+router.get('/review/:id', BookController.getAllReview);
+
 export const BookRoutes = router;

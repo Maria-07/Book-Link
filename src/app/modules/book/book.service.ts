@@ -14,15 +14,20 @@ import config from '../../../config';
 import { Secret } from 'jsonwebtoken';
 
 //* create a Book
-const createBook = async (cow: IBook): Promise<IBook | null> => {
-  let newCowAllData = null;
+const createBook = async (
+  book: IBook,
+  userEmail: string,
+): Promise<IBook | null> => {
+  let newBookData = null;
+
+  console.log(userEmail);
 
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
 
-    const newBook = await Book.create([cow], { session });
+    const newBook = await Book.create([book], { session });
 
     if (!newBook.length) {
       throw new ApiError(
@@ -31,7 +36,7 @@ const createBook = async (cow: IBook): Promise<IBook | null> => {
       );
     }
 
-    newCowAllData = newBook[0];
+    newBookData = newBook[0];
 
     await session.commitTransaction();
     await session.endSession();
@@ -41,7 +46,7 @@ const createBook = async (cow: IBook): Promise<IBook | null> => {
     throw error;
   }
 
-  return newCowAllData;
+  return newBookData;
 };
 
 //* Get all Book
@@ -152,7 +157,7 @@ const updateBook = async (
 
 //* Delete Book
 const deleteBook = async (id: string, token: string): Promise<IBook | null> => {
-  // console.log('Token => 🔖🔖', token);
+  console.log('Token => 🔖🔖', token);
 
   let verifiedToken = null;
 
@@ -165,7 +170,7 @@ const deleteBook = async (id: string, token: string): Promise<IBook | null> => {
     throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
   }
 
-  // console.log('verifiedToken =======', verifiedToken);
+  // // console.log('verifiedToken =======', verifiedToken);
 
   const { userEmail } = verifiedToken;
 
@@ -178,19 +183,6 @@ const deleteBook = async (id: string, token: string): Promise<IBook | null> => {
   // console.log('Deleted Result 🗑️🗑️', result);
   return result;
 };
-
-// //* Update a book
-// const addReview = async (id: string, payload: []) => {
-//   const result = await Book.updateOne(
-//     { id: id },
-//     { $push: { comments: comment } },
-//   );
-
-//   console.log(result);
-
-//   // console.log(result, 'updated result');
-//   return result;
-// };
 
 export const BookService = {
   createBook,

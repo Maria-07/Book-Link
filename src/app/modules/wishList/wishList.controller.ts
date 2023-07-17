@@ -5,14 +5,40 @@ import httpStatus from 'http-status';
 import pick from '../../../shared/pick';
 import { wishListFilterableFields } from '../../../constance/filterableFields';
 import { WishListService } from './WishList.service';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
+import config from '../../../config';
+import { Secret } from 'jsonwebtoken';
+import ApiError from '../../../errors/ApiError';
 
 // create WishList
 const createWishList: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { ...wishList } = req.body;
-    // console.log('order pro', order);
+    const token = req.headers.authorization;
+    console.log('token', token);
 
-    const result = await WishListService.createWishList(wishList);
+    let verifiedToken = null;
+
+    try {
+      verifiedToken = jwtHelpers.verifyToken(
+        token as string,
+        config.jwt.secret as Secret,
+      );
+    } catch (err) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
+    }
+
+    console.log('verifiedToken =======', verifiedToken);
+
+    const { userEmail } = verifiedToken;
+    console.log('Email 📩', userEmail);
+
+    console.log('wishList', wishList);
+
+    const result = await WishListService.createWishList(
+      { ...wishList, userEmail },
+      userEmail,
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,

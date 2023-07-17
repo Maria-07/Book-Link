@@ -3,17 +3,17 @@ import { IWishList, IWishListFilter } from './wishList.interface';
 import { WishList } from './wishList.model';
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
-import { IUser } from '../auth/auth.interface';
 import { IBook } from '../book/book.interface';
 
 const createWishList = async (
   wishList: IWishList,
-): Promise<IWishList | IUser | IBook | null> => {
+  userEmail: string,
+): Promise<IWishList | IBook | null> => {
   let newWishListData = null;
 
   // Start the transaction
   const session = await mongoose.startSession();
-
+  console.log(userEmail);
   try {
     session.startTransaction();
 
@@ -54,9 +54,7 @@ const getAllWishList = async (filters: IWishListFilter) => {
   }
   const whereCondition = andCondition.length > 0 ? { $and: andCondition } : {};
 
-  const result = await WishList.find(whereCondition)
-    .populate('book')
-    .populate('user');
+  const result = await WishList.find(whereCondition).populate('book');
 
   return {
     data: result,

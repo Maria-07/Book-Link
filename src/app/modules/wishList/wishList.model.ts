@@ -4,9 +4,9 @@ import { status } from './wish.constance';
 
 const WishListSchema: Schema<IWishList> = new Schema<IWishList>(
   {
-    book: { type: Types.ObjectId, ref: 'Book', required: true },
-    user: { type: Types.ObjectId, ref: 'User', required: true },
-    status: { type: String, enum: status, required: true },
+    book: { type: Types.ObjectId, ref: 'Book' },
+    userEmail: { type: String },
+    status: { type: String, enum: status },
   },
   {
     timestamps: true,

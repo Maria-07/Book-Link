@@ -8,14 +8,40 @@ import { bookFilterableFields } from '../../../constance/filterableFields';
 import { paginationFields } from '../../../constance/paginationC';
 import { IBook } from './book.interface';
 import { Book } from './book.model';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
+import config from '../../../config';
+import { Secret } from 'jsonwebtoken';
+import ApiError from '../../../errors/ApiError';
 
 //* create a Book profile
 const createBook: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const { ...bookData } = req.body;
-    const result = await BookService.createBook(bookData);
+    const token = req.headers.authorization;
+    console.log('token', token);
 
-    sendResponse(res, {
+    let verifiedToken = null;
+
+    try {
+      verifiedToken = jwtHelpers.verifyToken(
+        token as string,
+        config.jwt.secret as Secret,
+      );
+    } catch (err) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token');
+    }
+
+    console.log('verifiedToken =======', verifiedToken);
+
+    const { userEmail } = verifiedToken;
+    console.log('Email 📩', userEmail);
+
+    const { ...bookData } = req.body;
+    const result = await BookService.createBook(
+      { ...bookData, userEmail },
+      userEmail,
+    );
+
+    sendResponse<IBook>(res, {
       success: true,
       statusCode: httpStatus.OK,
       message: 'Book created successfully',

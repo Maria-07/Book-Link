@@ -8,6 +8,7 @@ const BookSchema = new Schema<IBook>(
     author: { type: String, required: true },
     genre: { type: String, enum: Genre, required: true },
     publicationDate: { type: String, required: true },
+    img: { type: String },
     userEmail: { type: String },
     reviews: [{ type: String }],
   },

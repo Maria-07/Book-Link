@@ -84,7 +84,6 @@ const getAllBookByYear = catchAsync(async (req: Request, res: Response) => {
 
   const result = await Book.find().sort(sortConditions).select({
     publicationDate: 1,
-    _id: 0,
   });
 
   sendResponse(res, {

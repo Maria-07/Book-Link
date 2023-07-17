@@ -27,7 +27,6 @@ export type IBook = {
   author: string;
   genre: IGenre;
   publicationDate: string;
-  publicationYear?: string;
   reviews?: string[];
   userEmail?: string;
   img?: string;

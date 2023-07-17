@@ -9,6 +9,28 @@ const createWishList = async (
   wishList: IWishList,
   userEmail: string,
 ): Promise<IWishList | IBook | null> => {
+  // Check if the wishlist already exists
+  const existingWishList = await WishList.findOne({
+    book: wishList.book,
+    userEmail: userEmail,
+  });
+
+  console.log('existingWishList', existingWishList);
+
+  if (existingWishList) {
+    await WishList.findOneAndUpdate(
+      { _id: existingWishList._id },
+      {
+        status: wishList.status,
+      },
+    );
+
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'Wishlist for this book already exists',
+    );
+  }
+
   let newWishListData = null;
 
   // Start the transaction

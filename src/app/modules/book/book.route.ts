@@ -9,6 +9,9 @@ router.post('/', BookController.createBook);
 //get all Book
 router.get('/', BookController.getAllBook);
 
+//get all Book by years
+router.get('/years', BookController.getAllBookByYear);
+
 // get a single book
 router.get('/:id', BookController.getSingleBook);
 

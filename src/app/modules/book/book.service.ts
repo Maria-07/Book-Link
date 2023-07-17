@@ -16,11 +16,11 @@ import { Secret } from 'jsonwebtoken';
 //* create a Book
 const createBook = async (
   book: IBook,
-  userEmail: string,
+  // userEmail: string,
 ): Promise<IBook | null> => {
   let newBookData = null;
 
-  console.log(userEmail);
+  // console.log(userEmail);
 
   const session = await mongoose.startSession();
 

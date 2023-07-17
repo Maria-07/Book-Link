@@ -12,6 +12,8 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import config from '../../../config';
 import { Secret } from 'jsonwebtoken';
 import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelpers';
+import { SortOrder } from 'mongoose';
 
 //* create a Book profile
 const createBook: RequestHandler = catchAsync(
@@ -38,7 +40,7 @@ const createBook: RequestHandler = catchAsync(
     const { ...bookData } = req.body;
     const result = await BookService.createBook(
       { ...bookData, userEmail },
-      userEmail,
+      // userEmail,
     );
 
     sendResponse<IBook>(res, {
@@ -65,6 +67,31 @@ const getAllBook = catchAsync(async (req: Request, res: Response) => {
     message: 'Books retrieved successfully',
     meta: result.meta,
     data: result.data,
+  });
+});
+
+//* get by year
+const getAllBookByYear = catchAsync(async (req: Request, res: Response) => {
+  const paginationOption = pick(req.query, paginationFields);
+  const { sortBy, sortOrder } =
+    paginationHelpers.calculationPagination(paginationOption);
+
+  const sortConditions: { [key: string]: SortOrder } = {};
+
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+
+  const result = await Book.find().sort(sortConditions).select({
+    publicationDate: 1,
+    _id: 0,
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'get all years successfully',
+    data: result,
   });
 });
 
@@ -156,4 +183,5 @@ export const BookController = {
   deleteBook,
   addReview,
   getAllReview,
+  getAllBookByYear,
 };
